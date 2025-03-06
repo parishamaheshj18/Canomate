@@ -971,7 +971,7 @@ AutomationOpClasses = [
     AutomationOp_DisconnectWireless, AutomationOp_PrintAPI, AutomationOp_DownloadFileByUrl,
     AutomationOp_WaitForNewFilesOnCamera, AutomationOp_GetInfoOnNewFilesPolled, AutomationOp_RunExecutable,
     AutomationOp_DownloadNewFilesPolled, AutomationOp_PrintMessageToLog, AutomationOp_ExitApp,
-    AutomationOp_PrintAperture, AutomationOp_SetAperture, AutomationOp_PrintShutterSpeed, AutomationOp_Speed,
+    AutomationOp_PrintAperture, AutomationOp_SetAperture, AutomationOp_PrintShutterSpeed, AutomationOp_SetShutterSpeed,
     AutomationOp_PrintIso, AutomationOp_SetIso, AutomationOp_PrintExposureCompensation, AutomationOp_SetExposureCompensation,
     AutomationOp_PrintWhiteBalance, AutomationOp_SetWhiteBalance, AutomationOp_PrintShootingModeDial,
     AutomationOp_PrintDriveMode, AutomationOp_SetDriveMode, AutomationOp_PrintAfMethod, AutomationOp_SetAfMethod,
