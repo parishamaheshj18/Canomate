@@ -971,7 +971,7 @@ AutomationOpClasses = [
     AutomationOp_DisconnectWireless, AutomationOp_PrintAPI, AutomationOp_DownloadFileByUrl,
     AutomationOp_WaitForNewFilesOnCamera, AutomationOp_GetInfoOnNewFilesPolled, AutomationOp_RunExecutable,
     AutomationOp_DownloadNewFilesPolled, AutomationOp_PrintMessageToLog, AutomationOp_ExitApp,
-    AutomationOp_PrintAperture, AutomationOp_SetAperture, AutomationOp_PrintShutterSpeed, AutomationOp_SetShutterSpeed,
+    AutomationOp_PrintAperture, AutomationOp_SetAperture, AutomationOp_PrintShutterSpeed, AutomationOp_Speed,
     AutomationOp_PrintIso, AutomationOp_SetIso, AutomationOp_PrintExposureCompensation, AutomationOp_SetExposureCompensation,
     AutomationOp_PrintWhiteBalance, AutomationOp_SetWhiteBalance, AutomationOp_PrintShootingModeDial,
     AutomationOp_PrintDriveMode, AutomationOp_SetDriveMode, AutomationOp_PrintAfMethod, AutomationOp_SetAfMethod,
@@ -1269,9 +1269,37 @@ class CCAPI:
     def getShutterSpeed(self, retryInfo):
         return self.getRelative(retryInfo, "/shooting/settings/tv")
 
+    # def setShutterSpeed(self, retryInfo, shutterSpeedStr):
+    #     dict = { 'value' : shutterSpeedStr }
+    #     return self.putRelative(retryInfo, '/shooting/settings/tv', json.dumps(dict))
+    
     def setShutterSpeed(self, retryInfo, shutterSpeedStr):
-        dict = { 'value' : shutterSpeedStr }
-        return self.putRelative(retryInfo, '/shooting/settings/tv', json.dumps(dict))
+        """
+        Solving issue : https://github.com/horshack-dpreview/Canomate/issues/3
+        Set the shutter speed based on user input.
+        User input can be:
+        - Whole numbers (e.g., 30, 25) → Convert to "30"", "25""
+        - Fractions (e.g., 1/4, 1/4000) → Keep as is
+        - Decimals (e.g., 0.5, 0.8) → Convert to "0"5", "0"8"
+        """
+        try:
+            
+            if '/' in shutterSpeedStr:
+                if '"' in shutterSpeedStr:
+                    shutterSpeedStr = shutterSpeedStr.replace('"', '')  # Remove quotes if present
+                shutterSpeedFormatted = shutterSpeedStr
+            elif '.' in shutterSpeedStr:
+                seconds, fraction = shutterSpeedStr.split('.')
+                shutterSpeedFormatted = f'{seconds}"{fraction}'
+            else:
+                shutterSpeedFormatted = f'{shutterSpeedStr}"'
+            applog_i(f"Setting shutter speed to: {shutterSpeedFormatted}")
+            dict = {'value': shutterSpeedFormatted}
+            return self.putRelative(retryInfo, '/shooting/settings/tv', json.dumps(dict))
+        except Exception as e:
+            applog_e(f"Error setting shutter speed: {str(e)}")
+            raise
+
 
     def getIso(self, retryInfo):
         return self.getRelative(retryInfo, "/shooting/settings/iso")
